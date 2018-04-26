@@ -134,22 +134,23 @@ public class StockDataHelper extends SQLiteOpenHelper {
         Log.i("updateRecordData","ret count :" + retCount);
     }
 
-    public ArrayList<String> queryMonth()
+    public ArrayList<String> queryStockName()
     {
-         String strMonth = "";
+         String strName;
          ArrayList<String> retList = new ArrayList<String>();
-//         int year;
-//         int month;
-//
-//        Cursor cursor = getReadableDatabase().query("RECDATE", null, null, null, null, null, null);
-//
-//        while(cursor.moveToNext()){
-//            year = cursor.getInt(cursor.getColumnIndex("year"));
-//            month = cursor.getInt(cursor.getColumnIndex("month"));
-//
-//            strMonth = "" + year + "-" + month + "-";
-//            retList.add(strMonth);
-//        }
+
+        Cursor cursor = getReadableDatabase().query("STOCK_LIST",
+                new String[]{ "_code", "_name", "_valid" },
+                "",
+                new String[]{ },
+                null, null, null);
+        while(cursor.moveToNext()){
+            strName = cursor.getString(cursor.getColumnIndex("_name"));
+            retList.add(strName);
+        }
+
+        cursor.close();
+
 
         return retList;
     }
@@ -157,23 +158,24 @@ public class StockDataHelper extends SQLiteOpenHelper {
     public ArrayList<StockRecData> queryStockData(String code)
     {
         ArrayList<StockRecData> retList = new ArrayList<StockRecData>();
-//        String rec_date;
-//        String rec_fdsy;
-//        String rec_bj;
-//        String rec_fdrate;
-//
-//        RateRecData recData;
-//
-//        Cursor cursor = getReadableDatabase().query("WAMALLFDRATE", new String[]{ "rec_date", "rec_fdsy", "rec_bj", "rec_fdrate" }, "rec_date LIKE ? ", new String[]{ yearMonth+"%" }, null, null, null);
-//        while(cursor.moveToNext()){
-//            rec_date = cursor.getString(cursor.getColumnIndex("rec_date"));
-//            rec_fdsy = cursor.getString(cursor.getColumnIndex("rec_fdsy"));
-//            rec_bj = cursor.getString(cursor.getColumnIndex("rec_bj"));
-//            rec_fdrate = cursor.getString(cursor.getColumnIndex("rec_fdrate"));
-//
-//            recData = new RateRecData(rec_date, rec_fdsy, rec_bj, rec_fdrate );
-//            retList.add(recData);
-//        }
+        String price;
+        String date;
+        StockRecData recData;
+
+        Cursor cursor = getReadableDatabase().query("REC_LIST",
+                new String[]{ "current_price", "update_date" },
+                "_code=?",
+                new String[]{ ""+code},
+                null, null, null);
+        while(cursor.moveToNext()){
+            price = cursor.getString(cursor.getColumnIndex("current_price"));
+            date = cursor.getString(cursor.getColumnIndex("update_date"));
+
+            recData = new StockRecData(price, date);
+            retList.add(recData);
+        }
+
+        cursor.close();
 
         return retList;
     }

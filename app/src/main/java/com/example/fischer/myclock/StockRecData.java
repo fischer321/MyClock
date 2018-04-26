@@ -74,4 +74,9 @@ public class StockRecData {
         update_date = i29;
         update_time = i30;
     }
+
+    public StockRecData(String cur_price, String date) {
+        current_price = cur_price;
+        update_date = date;
+    }
 }

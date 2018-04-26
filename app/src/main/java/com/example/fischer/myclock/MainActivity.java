@@ -2,6 +2,8 @@ package com.example.fischer.myclock;
 
 import android.app.Activity;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.view.View;
@@ -15,9 +17,10 @@ public class MainActivity extends Activity {
 
     private TextView clock_text;
     private CountDownTimer newtimer;
-    private Button mInsertBtn, mFetchDataBtn;
+    private Button mInsertBtn, mFetchDataBtn, mViewerBtn;
     private StockDataHelper mStockDataHelper;
     private EditText mCodeEdit, mNameEdit;
+    private Context mContext;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +55,7 @@ public class MainActivity extends Activity {
     private void initUI() {
         mInsertBtn = (Button) findViewById(R.id.btn_init_stock_list);
         mFetchDataBtn = (Button) findViewById(R.id.btn_fetch_stock_data);
+        mViewerBtn = (Button) findViewById(R.id.btnViewer);
 
         mCodeEdit = (EditText) findViewById(R.id.editCode);
         mNameEdit = (EditText) findViewById(R.id.editName);
@@ -78,10 +82,19 @@ public class MainActivity extends Activity {
                 mStockDataHelper.fetchStockData();
             }
         });
+
+        mViewerBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(mContext , StockViewer.class);
+                mContext.startActivity(intent);
+            }
+        });
     }
 
     private void initData() {
         mStockDataHelper = new StockDataHelper(this.getApplicationContext());
+        mContext = this;
     }
 
 
