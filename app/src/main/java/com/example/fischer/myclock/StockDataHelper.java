@@ -20,10 +20,15 @@ public class StockDataHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME="/sdcard/Android/data/stock_record.db";//数据库名称
     private static final int SCHEMA_VERSION=1;//版本号,则是升级之后的,升级方法请看onUpgrade方法里面的判断
     private Context mContext;
+    private ArrayList<String> mStockNameList;
+    private ArrayList<String> mStockCodeList;
 
     public StockDataHelper(Context context) {//构造函数,接收上下文作为参数,直接调用的父类的构造函数
         super(context, DATABASE_NAME, null, SCHEMA_VERSION);
         mContext = context;
+
+        mStockNameList = null;
+        mStockCodeList = null;
     }
 
     @Override
@@ -137,22 +142,39 @@ public class StockDataHelper extends SQLiteOpenHelper {
     public ArrayList<String> queryStockName()
     {
          String strName;
-         ArrayList<String> retList = new ArrayList<String>();
+        String codeName;
+        ArrayList<String> retList;
+         if (mStockNameList == null) {
+             retList = new ArrayList<String>();
+             ArrayList<String> codeList = new ArrayList<String>();
 
-        Cursor cursor = getReadableDatabase().query("STOCK_LIST",
-                new String[]{ "_code", "_name", "_valid" },
-                "",
-                new String[]{ },
-                null, null, null);
-        while(cursor.moveToNext()){
-            strName = cursor.getString(cursor.getColumnIndex("_name"));
-            retList.add(strName);
-        }
+             Cursor cursor = getReadableDatabase().query("STOCK_LIST",
+                     new String[]{ "_code", "_name", "_valid" },
+                     "",
+                     new String[]{ },
+                     null, null, null);
+             while(cursor.moveToNext()){
+                 strName = cursor.getString(cursor.getColumnIndex("_name"));
+                 codeName = cursor.getString(cursor.getColumnIndex("_code"));
+                 retList.add(strName);
+                 codeList.add(codeName);
+             }
 
-        cursor.close();
+             cursor.close();
+
+             mStockNameList = retList;
+             mStockCodeList = codeList;
+
+         } else {
+             retList = mStockNameList;
+         }
 
 
         return retList;
+    }
+
+    public String getCodeByIndex(int index) {
+        return mStockCodeList.get(index);
     }
 
     public ArrayList<StockRecData> queryStockData(String code)
@@ -160,18 +182,22 @@ public class StockDataHelper extends SQLiteOpenHelper {
         ArrayList<StockRecData> retList = new ArrayList<StockRecData>();
         String price;
         String date;
+        String dealNum;
+        String time;
         StockRecData recData;
 
         Cursor cursor = getReadableDatabase().query("REC_LIST",
-                new String[]{ "current_price", "update_date" },
+                new String[]{ "current_price", "update_date", "deal_num", "update_time" },
                 "_code=?",
                 new String[]{ ""+code},
                 null, null, null);
         while(cursor.moveToNext()){
             price = cursor.getString(cursor.getColumnIndex("current_price"));
             date = cursor.getString(cursor.getColumnIndex("update_date"));
+            dealNum = cursor.getString(cursor.getColumnIndex("deal_num"));
+            time = cursor.getString(cursor.getColumnIndex("update_time"));
 
-            recData = new StockRecData(price, date);
+            recData = new StockRecData(price, date, dealNum, time);
             retList.add(recData);
         }
 

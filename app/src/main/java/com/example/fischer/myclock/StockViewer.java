@@ -59,6 +59,11 @@ public class StockViewer extends Activity {
 
                 String stockName = mySpinnerAdapter.getItem(arg2);
                 arg0.setVisibility(View.VISIBLE);
+                int index = arg2;
+                String code = mStockDataHelper.getCodeByIndex(index);
+
+                ArrayList<StockRecData> recList = mStockDataHelper.queryStockData(code);
+                fillListView(recList);
 
                 //fillListView();
 
@@ -86,5 +91,28 @@ public class StockViewer extends Activity {
     private void initData() {
         mStockDataHelper = new StockDataHelper(this.getApplicationContext());
         fillSpinnerStockList();
+    }
+
+    private void fillListView(ArrayList<StockRecData> recList)
+    {
+        populateListView(recList);
+        listview_adapter = new listviewAdapter(this, hashmapList);
+        listview_record.setAdapter(listview_adapter);
+    }
+
+    private void populateListView(ArrayList<StockRecData> recList)
+    {
+        hashmapList = new ArrayList<HashMap<String,String>>();
+
+
+
+        for (StockRecData rec : recList) {
+            HashMap<String,String> temp = new HashMap<String,String>();
+            temp.put(FIRST_COLUMN, rec.update_date);
+            temp.put(SECOND_COLUMN, rec.current_price);
+            temp.put(THIRD_COLUMN, rec.deal_num);
+            temp.put(FOURTH_COLUMN, rec.update_time);
+            hashmapList.add(temp);
+        }
     }
 }

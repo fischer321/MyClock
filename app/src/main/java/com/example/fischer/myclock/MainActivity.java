@@ -33,7 +33,7 @@ public class MainActivity extends Activity {
                 Calendar c = Calendar.getInstance();
                 //clock_text.setText(c.get(Calendar.HOUR)+":"+c.get(Calendar.MINUTE)+":"+c.get(Calendar.SECOND));
                 //clock_text.setText(String.format("%1$tH:%1$tM:%1$tS", c));
-                clock_text.setText(String.format("%02d:%02d:%02d", c.get(Calendar.HOUR)+8, c.get(Calendar.MINUTE), c.get(Calendar.SECOND)));
+                clock_text.setText(String.format("%02d:%02d:%02d", c.get(Calendar.HOUR), c.get(Calendar.MINUTE), c.get(Calendar.SECOND)));
             }
             public void onFinish() {
 
