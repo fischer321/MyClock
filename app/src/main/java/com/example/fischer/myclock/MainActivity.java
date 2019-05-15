@@ -11,6 +11,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.example.fischer.myclock.dbservice.DBEngine;
+
 import java.util.Calendar;
 
 public class MainActivity extends Activity {
@@ -80,6 +82,9 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View v) {
                 mStockDataHelper.fetchStockData();
+                Intent i = new Intent(mContext, DBEngine.class);
+                i.putExtra("key1", "value to be used by the service");
+                mContext.startService(i);
             }
         });
 
