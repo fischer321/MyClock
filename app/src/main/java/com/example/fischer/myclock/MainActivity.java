@@ -18,9 +18,9 @@ import java.util.Calendar;
 public class MainActivity extends Activity {
 
     private TextView clock_text;
-    private CountDownTimer newtimer;
+    private CountDownTimer newTimer;
     private Button mInsertBtn, mFetchDataBtn, mViewerBtn;
-    private StockDataHelper mStockDataHelper;
+    // private StockDataHelper mStockDataHelper;
     private EditText mCodeEdit, mNameEdit;
     private Context mContext;
 
@@ -29,7 +29,7 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         clock_text = (TextView)findViewById(R.id.textView);
-        newtimer = new CountDownTimer(1000000000, 1000) {
+        newTimer = new CountDownTimer(1000000000, 1000) {
 
             public void onTick(long millisUntilFinished) {
                 Calendar c = Calendar.getInstance();
@@ -41,17 +41,19 @@ public class MainActivity extends Activity {
 
             }
         };
-        newtimer.start();
+        newTimer.start();
 
         initUI();
         initData();
+
+        fetchData();
     }
 
     @Override
     protected void onDestroy() {
 
         super.onDestroy();
-        newtimer.cancel();
+        newTimer.cancel();
     }
 
     private void initUI() {
@@ -68,11 +70,10 @@ public class MainActivity extends Activity {
                 String code = mCodeEdit.getText().toString();
                 String name = mNameEdit.getText().toString();
                 if (code.length()>0 && name.length()>0) {
-                    mStockDataHelper.appendStockList(new NameRecData(code, name, true));
+                    appendStockList(code, name);
                 } else {
-                    mStockDataHelper.insertStockList();
+                    insertStockList();
                 }
-
             }
         });
 
@@ -81,10 +82,7 @@ public class MainActivity extends Activity {
         mFetchDataBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mStockDataHelper.fetchStockData();
-                Intent i = new Intent(mContext, DBEngine.class);
-                i.putExtra("key1", "value to be used by the service");
-                mContext.startService(i);
+                fetchData();
             }
         });
 
@@ -98,8 +96,31 @@ public class MainActivity extends Activity {
     }
 
     private void initData() {
-        mStockDataHelper = new StockDataHelper(this.getApplicationContext());
+        // mStockDataHelper = new StockDataHelper(this.getApplicationContext());
         mContext = this;
+    }
+
+    private void fetchData() {
+//        mStockDataHelper.fetchStockData();
+        Intent i = new Intent(mContext, DBEngine.class);
+        i.putExtra("cmd", "FetchData");
+        mContext.startService(i);
+    }
+
+    private void insertStockList() {
+        Intent i = new Intent(mContext, DBEngine.class);
+        i.putExtra("cmd", "InsertStockList");
+        mContext.startService(i);
+    }
+
+    private void appendStockList(String code, String name) {
+//        mStockDataHelper.appendStockList(nameRec);
+        Intent i = new Intent(mContext, DBEngine.class);
+        i.putExtra("cmd", "AppendStockList");
+        i.putExtra("code", code);
+        i.putExtra("name", name);
+
+        mContext.startService(i);
     }
 
 

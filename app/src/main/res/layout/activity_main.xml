@@ -42,14 +42,14 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:inputType="text"
-            android:text="" />
+            android:text="sh601006" />
         <EditText
             android:id="@+id/editName"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:ems="10"
             android:inputType="text"
-            android:text="" />
+            android:text="大秦铁路" />
         <Button
             android:id="@+id/btn_init_stock_list"
             android:layout_width="wrap_content"
